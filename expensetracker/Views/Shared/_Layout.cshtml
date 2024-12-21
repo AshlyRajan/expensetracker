@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Expense Tracker</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/expensetracker.styles.css" asp-append-version="true" />
+    <style>
+        footer {
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 1rem 0;
+            font-weight: bold;
+        }
+
+        .home-page-banner {
+            background: linear-gradient(90deg, #4caf50, #81c784);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            border-radius: 10px;
+        }
+
+        .home-page-content {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                @*   Logo  *@
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logoex.jpg" width="50" height="50" class="me-2" />
+                    <strong>Expense Tracker</strong>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <!-- Navbar Links -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ExpenseTracker" asp-action="Register ">Sign Up</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ExpenseTracker" asp-action="SignIn">Sign In</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section class="hero-section">
+        <div class="container">
+            <h1>Manage Your Finances with Ease</h1>
+            <p>Track your expenses, budget your spending, and achieve financial freedom.</p>
+
+        </div>
+    </section>
+
+    <!-- Features Section -->
+   @*  <section class="features-section">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="row">
+                <div class="col-md-4 feature-item">
+                    <img src="~/images/icon1.png" alt="Feature 1" class="img-fluid mb-3" />
+                    <h4>Track Expenses</h4>
+                    <p>Monitor your daily spending and categorize expenses for better insights.</p>
+                </div>
+                <div class="col-md-4 feature-item">
+                    <img src="~/images/icon2.png" alt="Feature 2" class="img-fluid mb-3" />
+                    <h4>Set Budgets</h4>
+                    <p>Create budgets to control your spending and avoid overspending.</p>
+                </div>
+                <div class="col-md-4 feature-item">
+                    <img src="~/images/icon3.png" alt="Feature 3" class="img-fluid mb-3" />
+                    <h4>Generate Reports</h4>
+                    <p>Get detailed reports to analyze your financial health over time.</p>
+                </div>
+            </div>
+        </div>
+    </section> *@
+    <div class="container">
+
+        <main role="main" class="pb-3">
+            @RenderBody() <!-- This ensures child views render their content here -->
+        </main>
+
+    </div>
+    <footer class="border-top footer">
+        <div class="container">
+            &copy; 2024 - Expense Tracker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
