@@ -1,54 +1,124 @@
 ﻿@model expensetracker.Models.property
 @{
-    ViewData["Title"] = "User Registration";
+    ViewData["Title"] = "Sign Up";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>User Registration</h2>
+<h1 class="text-center mb-4" style="font-family: 'Arial', sans-serif; color: #333;">Create Your Account</h1>
 
-<form asp-action="Register" method="post">
-    <div class="form-group">
-        <label for="Name">Full Name</label>
-        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
-        @* Use ValidationMessageFor to display validation errors *@
-        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; background-color: #f5f7fa;">
+    <div class="card shadow-lg p-5" style="max-width: 500px; width: 100%; border-radius: 15px; background: #fff;">
+        <form asp-action="Register" method="post">
+            <!-- Full Name -->
+            <div class="form-group">
+                <label for="Name" class="font-weight-bold">Full name</label>
+                <input type="text" class="form-control" id="Name" name="Name" required placeholder="Enter your full name" />
+            </div>
+
+            <!-- Age -->
+            <div class="form-group">
+                <label for="Age" class="font-weight-bold">Age</label>
+                <input type="number" class="form-control" id="Age" name="Age" required placeholder="Enter your age" />
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+                <label for="Address" class="font-weight-bold">Address</label>
+                <input type="text" class="form-control" id="Address" name="Address" required placeholder="Enter your address" />
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="Email" class="font-weight-bold">Email</label>
+                <input type="email" class="form-control" id="Email" name="Email" required placeholder="Enter your email" />
+            </div>
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="Username" class="font-weight-bold">Username</label>
+                <input type="text" class="form-control" id="Username" name="Username" required placeholder="Choose a username" />
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="Password" class="font-weight-bold">Password</label>
+                <input type="password" class="form-control" id="Password" name="Password" required placeholder="Create a password" />
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary btn-block py-2" style="font-size: 16px;">Sign Up</button>
+        </form>
+
+        <!-- Success or error messages -->
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success mt-3">
+                @TempData["Message"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger mt-3">
+                @TempData["Error"]
+            </div>
+        }
     </div>
+</div>
 
-    <div class="form-group">
-        <label for="Age">Age</label>
-        <input type="text" class="form-control" id="Age" name="Age" value="@Model.Age" required />
-        @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
-    </div>
+<!-- Optional background gradient -->
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f5f7fa;
+    }
 
-    <div class="form-group">
-        <label for="Address">Address</label>
-        <input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" required />
-        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
-    </div>
+    .card {
+        border-radius: 15px; /* Rounded corners for the card */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
 
-    <div class="form-group">
-        <label for="Email">Email</label>
-        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
-        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-    </div>
+    .form-control {
+        border-radius: 8px; /* Rounded input fields */
+        padding: 12px; /* More padding */
+        border: 1px solid #ddd;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-    <div class="form-group">
-        <label for="Password">Password</label>
-        <input type="password" class="form-control" id="Password" name="Password" value="@Model.Password" required />
-        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-    </div>
+        .form-control:focus {
+            border-color: #1e90ff; /* Focus effect */
+            box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);
+        }
 
-    <div class="form-group">
-        <label for="ConfirmPassword">Confirm Password</label>
-        <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" value="@Model.ConfirmPassword" required />
-        @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-    </div>
+    .btn-primary {
+        background-color: #1e90ff;
+        border-color: #1e90ff;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
 
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+        .btn-primary:hover {
+            background-color: #0a74d6; /* Darker shade on hover */
+            border-color: #0a74d6;
+        }
 
-@if (TempData["Message"] != null)
-{
-    <div class="alert alert-success mt-3">
-        @TempData["Message"]
-    </div>
-}
+    .alert {
+        border-radius: 8px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        color: #333;
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        font-size: 14px;
+    }
+</style>

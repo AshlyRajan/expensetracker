@@ -1,0 +1,113 @@
+﻿@* @model expensetracker.Models.property *@
+@{
+    ViewData["Title"] = "About Us - Expense Tracker";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        .about-section {
+            padding: 50px 0;
+            background-color: #f9f9f9;
+        }
+
+        .about-section h2 {
+            margin-bottom: 30px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .about-section p {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .team-section {
+            padding: 50px 0;
+        }
+
+        .team-member {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .team-member h5 {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .team-member p {
+            font-size: 16px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- About Us Section -->
+        <section class="about-section">
+            <h2 class="text-center">About Us</h2>
+            <p>
+                Welcome to Expense Tracker, your one-stop solution to managing your finances efficiently and effectively.
+                We understand the importance of tracking your spending, setting budgets, and analyzing financial health,
+                which is why we have created this platform to help you achieve your financial goals.
+            </p>
+            <p>
+                Our team is committed to providing a user-friendly experience with powerful features that give you insight
+                into your spending habits and help you stay on top of your budget. Whether you're saving for a goal or simply
+                trying to control your daily expenses, Expense Tracker is here to help you succeed.
+            </p>
+        </section>
+
+        <!-- Our Team Section -->
+        <section class="team-section text-center">
+            <h2>Meet Our Team</h2>
+            <div class="row">
+                <!-- Team Member 1 -->
+                <div class="col-md-4 team-member">
+                    <img src="/images/logoex.jpg" alt="Team Member 1" class="img-fluid">
+                    <h5>John Doe</h5>
+                    <p>CEO & Founder</p>
+                    <p>John leads the team with a passion for financial management and innovative solutions.</p>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="col-md-4 team-member">
+                    <img src="/images/logoex.jpg" alt="Team Member 2" class="img-fluid">
+                    <h5>Jane Smith</h5>
+                    <p>Product Manager</p>
+                    <p>Jane is responsible for overseeing the development of new features and improving user experience.</p>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="col-md-4 team-member">
+                    <img src="/images/logoex.jpg" alt="Team Member 3" class="img-fluid">
+                    <h5>Michael Johnson</h5>
+                    <p>Lead Developer</p>
+                    <p>Michael is the technical mind behind the app, making sure everything runs smoothly.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

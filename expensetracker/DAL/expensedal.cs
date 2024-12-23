@@ -13,68 +13,45 @@ namespace expensetracker.DAL
         {
             connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-
-        public bool AddUser(property user)
+        public void InsertUser(string name, int age, string address, string email, string username, string password)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("[sp_insert]", connection);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@Name", user.Name);
-                    cmd.Parameters.AddWithValue("@Age", user.Age);
-                    cmd.Parameters.AddWithValue("@Address", user.Address);
-                    cmd.Parameters.AddWithValue("@Email", user.Email);
-                    cmd.Parameters.AddWithValue("@Dare", user.Date);
-                    cmd.Parameters.AddWithValue("@Password", user.Password);
-
                     connection.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    return rowsAffected > 0;
+
+                    // Create SQL Command
+                    using (SqlCommand cmd = new SqlCommand("sp_insert", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        // Add parameters
+                        cmd.Parameters.AddWithValue("@name", name);
+                        cmd.Parameters.AddWithValue("@age", age);
+                        cmd.Parameters.AddWithValue("@addr", address); // Ensure this is correctly added
+                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Parameters.AddWithValue("@username", username);
+                        cmd.Parameters.AddWithValue("@password", password);
+
+                        // Execute the command
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        // Optional: Output success message
+                        Console.WriteLine($"{rowsAffected} row(s) inserted successfully.");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception (if logging is configured)
-                    throw new Exception("Error adding user: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
+                    // Handle errors
+                    Console.WriteLine($"An error occurred: {ex.Message}");
                 }
             }
         }
-
-        // Method to Check if Email Already Exists
-        public bool IsEmailExists(string email)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    SqlCommand cmd = new SqlCommand("sp_IsEmailExists", connection);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@Email", email);
-
-                    connection.Open();
-                    var result = cmd.ExecuteScalar();
-                    return result != null && Convert.ToInt32(result) > 0;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error checking email existence: " + ex.Message);
-                }
-                finally
-                {
-                    connection.Close();
-                }
-            }
-        }
+       
 
 
-            private readonly List<user> _users;
+        private readonly List<user> _users;
 
             public expensedal()
             {

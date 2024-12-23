@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Contact Us - Expense Tracker";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .contact-section {
+            padding: 50px 15px;
+        }
+
+            .contact-section h2 {
+                margin-bottom: 30px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .contact-section p {
+                font-size: 18px;
+                color: #555;
+            }
+
+        .contact-form input,
+        .contact-form textarea {
+            margin-bottom: 20px;
+        }
+
+        .contact-form button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .contact-form button:hover {
+                background-color: #218838;
+            }
+
+        .contact-info {
+            background-color: #e9ecef;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+            .contact-info h4 {
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+        .map-container {
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Contact Us Section -->
+        <section class="contact-section text-center">
+            <h2>Contact Us</h2>
+           
+            <div class="row justify-content-center">
+                <!-- Contact Form -->
+                <div class="col-md-5">
+                    <div class="contact-form">
+                        <form method="post" action="/ExpenseTracker/ContactUs">
+                            <div class="form-group">
+                                <label for="Name">Full name</label>
+                                <input type="text" class="form-control" id="Name" name="Name" required placeholder="Your Full Name" />
+                            </div>
+                            <div class="form-group">
+                                <label for="Email">Email</label>
+                                <input type="email" class="form-control" id="Email" name="Email" required placeholder="Your Email Address" />
+                            </div>
+                            <div class="form-group">
+                                <label for="Message">Message</label>
+                                <textarea class="form-control" id="Message" name="Message" rows="4" required placeholder="Your Message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="col-md-5">
+                    <div class="contact-info">
+                        <h4>Our Office</h4>
+                        <p>
+                            123 Finance Street, Suite 456<br />
+                            Business City, BC 12345
+                        </p>
+
+                        <h4>Contact Details</h4>
+                        <p>
+                            <strong>Phone:</strong> +1 (123) 456-7890<br />
+                            <strong>Email:</strong> support@expensetracker.com
+                        </p>
+
+                        <h4>Business Hours</h4>
+                        <p>
+                            Monday - Friday: 9:00 AM - 6:00 PM<br />
+                            Saturday: 10:00 AM - 2:00 PM<br />
+                            Sunday: Closed
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Section -->
+            <div class="map-container mt-5">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509743!2d144.95565151531834!3d-37.8172489797511!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0x5045675218ce720!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1615423232422!5m2!1sen!2sus"
+                        width="100%"
+                        height="400"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy">
+                </iframe>
+            </div>
+        </section>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

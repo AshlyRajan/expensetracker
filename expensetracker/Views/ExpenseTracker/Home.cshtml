@@ -1,0 +1,61 @@
+﻿@* @model expensetracker.Models.property
+@{
+    ViewData["Title"] = "Home";
+} *@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Expense Tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        .features-section {
+            padding: 50px 0;
+            background-color: #f9f9f9;
+        }
+
+        .feature-item img {
+            max-width: 350px; /* Increased from 100px to 150px */
+            margin-bottom: 20px; /* Add some spacing below the images */
+        }
+
+        .feature-item h4 {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Features Section -->
+    @*  <section class="features-section">
+    <div class="container"> *@
+    <h2 class="text-center mb-5">Features</h2>
+    <div class="row">
+        <div class="col-md-4 feature-item text-center">
+            <img src="/images/icon1.png" alt="Feature 1" class="img-fluid mb-3">
+            <h4>Track Expenses</h4>
+            <p>Monitor your daily spending and categorize expenses for better insights.</p>
+        </div>
+        <div class="col-md-4 feature-item text-center">
+            <img src="/images/icon2.png" alt="Feature 2" class="img-fluid mb-3">
+            <h4>Set Budgets</h4>
+            <p>Create budgets to control your spending and avoid overspending.</p>
+        </div>
+        <div class="col-md-4 feature-item text-center">
+            <img src="/images/icon3.png" alt="Feature 3" class="img-fluid mb-3">
+            <h4>Generate Reports</h4>
+            <p>Get detailed reports to analyze your financial health over time.</p>
+        </div>
+    </div>
+    @*  </div>
+    </section> *@
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

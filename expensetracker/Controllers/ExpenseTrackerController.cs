@@ -1,12 +1,15 @@
 ﻿using expensetracker.Models;
 using expensetracker.DAL;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace expensetracker.Controllers
 {
     public class ExpenseTrackerController : Controller
     {
         private readonly expensedal _dataAccess;
+        
 
         // Constructor to inject the data access layer
         public ExpenseTrackerController(expensedal dataAccess)
@@ -14,56 +17,52 @@ namespace expensetracker.Controllers
             _dataAccess = dataAccess;
         }
 
-        // GET: /ExpenseTracker/Register
+        public IActionResult Home()
+        {
+            return View();
+        }
+        public IActionResult Aboutus()
+        {
+            return View();
+        }
+        public IActionResult Contactus()
+        {
+            return View();
+        }
+
+
+        // Action for displaying the registration form
         [HttpGet]
-        [Route("ExpenseTracker/Register")]
         public IActionResult Register()
         {
-            return View(new property());  // Return the registration form view
+            return View();
         }
 
-        // POST: /ExpenseTracker/Register
+        // Action for handling the form submission
         [HttpPost]
-        [Route("ExpenseTracker/Register")]
-        public IActionResult Register(property user)
+        public IActionResult Register(string Name, int Age, string Address, string Email, string Username, string Password)
         {
-            if (ModelState.IsValid)
+            try
             {
-                // Check if the email already exists
-                if (_dataAccess.IsEmailExists(user.Email))
-                {
-                    ModelState.AddModelError("Email", "Email already exists.");
-                    return View(user);  // Return the form with validation error
-                }
+                // Call the InsertUser method of expensedal to insert data
+                _dataAccess.InsertUser(Name, Age, Address, Email, Username, Password);
 
-                // Add the user to the database
-                bool isUserAdded = _dataAccess.AddUser(user);
-                if (isUserAdded)
-                {
-                    // Redirect to the success page
-                    TempData["Message"] = "Registration successful!";
-                    return RedirectToAction("RegistrationSuccess");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "There was an error registering the user.");
-                    return View(user);  // Return the form with error message
-                }
+                // Set success message and redirect
+                TempData["Message"] = "User registered successfully!";
+                return RedirectToAction("Register");
             }
-            return View(user);  // If model is invalid, return the form with validation errors
+            catch (Exception ex)
+            {
+                // Handle errors and set failure message
+                TempData["Error"] = $"Error adding user: {ex.Message}";
+                return RedirectToAction("Register");
+            }
         }
-
-        // GET: /ExpenseTracker/RegistrationSuccess
-        [HttpGet]
-        [Route("ExpenseTracker/RegistrationSuccess")]
-        public IActionResult RegistrationSuccess()
-        {
-            return View();  // Return the registration success view
-        }
+   
 
 
-        // GET: /Account/SignIn
-        [HttpGet]
+    // GET: /Account/SignIn
+    [HttpGet]
         public IActionResult SignIn()
         {
             return View();
@@ -102,79 +101,9 @@ namespace expensetracker.Controllers
         }
     }
 }
-    
 
 
 
 
-//using expensetracker.DAL;
-//using expensetracker.Models;
-//using Microsoft.AspNetCore.Mvc;
-
-//namespace expensetracker.Controllers
-//{
-//    public class ExpenseTrackerController : Controller
-//    {
-//        [ApiController]
-//        [Route("api/[controller]")]
-//        public class ExpensesController : ControllerBase
-//        {
-//            private readonly expensedal _dataAccess;
-
-//            public ExpensesController(expensedal dataAccess)
-//            {
-//                _dataAccess = dataAccess;
-//            }
 
 
-
-//            // GET: /ExpenseTracker/Register
-//            [HttpGet]
-//            [Route("ExpenseTracker/Register")]
-
-//            public IActionResult Register()
-//            {
-//                return View();  // Return the registration view
-//            }
-
-
-//            // POST: /ExpenseTracker/Register
-//            [HttpPost]
-//            [Route("ExpenseTracker/Register")]
-//            public IActionResult Register(property user)
-//            {
-//                if (ModelState.IsValid)
-//                {
-//                    // Check if email exists
-//                    if (_dataAccess.IsEmailExists(user.Email))
-//                    {
-//                        ModelState.AddModelError("Email", "Email already exists.");
-//                        return View(user);
-//                    }
-
-//                    // Add user to the database
-//                    bool isUserAdded = _dataAccess.AddUser(user);
-//                    if (isUserAdded)
-//                    {
-//                        return RedirectToAction("RegistrationSuccess");  // Redirect to success page
-//                    }
-//                    else
-//                    {
-//                        ModelState.AddModelError("", "There was an error registering the user.");
-//                        return View(user);
-//                    }
-//                }
-//                return View(user);  // If model is invalid, return the form with validation errors
-//            }
-
-
-//            // GET: /ExpenseTracker/RegistrationSuccess
-//            [HttpGet]
-//            [Route("ExpenseTracker/RegistrationSuccess")]
-//            public IActionResult RegistrationSuccess()
-//            {
-//                return View();  // Return the registration success view
-//            }
-//        }
-//    }
-//}
