@@ -1,0 +1,90 @@
+﻿@model List<expensetracker.Models.Expenz>
+@{
+    ViewData["Title"] = "Admin Home";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<div class="container mt-5">
+
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h1>Welcome to Admin Home</h1>
+            <p class="lead">Manage expenses and employees efficiently</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- Manage Expense Types -->
+        <div class="col-md-4 col-sm-6 text-center mb-4">
+            <a asp-action="ListExpenseTypes">
+                <img src="/images/manageexp.jpg" class="img-fluid rounded-circle shadow" alt="Manage Expense Types" />
+            </a>
+            <h4 class="mt-3">Manage Expense Types</h4>
+        </div>
+
+        <!-- Manage Employees -->
+        <div class="col-md-4 col-sm-6 text-center mb-4">
+            <a asp-action="Indexadmin">
+                <img src="/images/expense.jpg" class="img-fluid rounded-circle shadow" alt="Manage Employees" />
+            </a>
+            <h4 class="mt-3">Manage Employees</h4>
+        </div>
+
+        <!-- View Expenses -->
+        <div class="col-md-4 col-sm-6 text-center mb-4">
+            <a asp-action="joineddetails">
+                <img src="/images/view.jpg" class="img-fluid rounded-circle shadow" alt="View Expenses" />
+            </a>
+            <h4 class="mt-3">View Expenses</h4>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2>Recent Expenses</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Expense Type</th>
+                        <th>Amount</th>
+                        <th>Date of Expense</th>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var expense in Model)
+                    {
+                        <tr>
+                            <td>@expense.Expenseid</td>
+                            <td>@expense.ExpenseTypeName</td>
+                            <td>@expense.Amount</td>
+                            <td>@expense.DateofExpense.ToString("dd/MM/yyyy")</td>
+                            <td>@expense.Description</td>
+                            <td>@expense.CreatedBy</td>
+                            <td>@expense.Status</td>
+                            <td>
+                                @using (Html.BeginForm("HandleAction", "Admin", FormMethod.Post))
+                                {
+                                    <input type="hidden" name="ExpenseId" value="@expense.Expenseid" />
+                                    <button class="btn btn-success" name="action" value="accept">Accept</button>
+                                    <button class="btn btn-danger" name="action" value="decline">Decline</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <script>
+                function handleAction(expenseId, action) {
+                    alert(`Expense ID: ${expenseId}, Action: ${action}`);
+                                }
+            </script>
+
+        </div>
+    </div>
+</div>

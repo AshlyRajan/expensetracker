@@ -1,0 +1,44 @@
+﻿@model IEnumerable<expensetracker.Models.ExpenseTypes>
+@{
+    ViewData["Title"] = "ListExpenseTypes";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+
+
+<div class="container mt-5">
+
+
+
+    <h2>Expense Types</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var expenseType in Model)
+            {
+                <tr>
+                    <td>@expenseType.ExpenseTypeID</td>
+                    <td>@expenseType.ExpenseType</td>
+                    <td>
+                        <a asp-action="EditExpenseType" asp-route-id="@expenseType.ExpenseTypeID" class="btn btn-primary">Edit</a>
+                        <a asp-action="DeleteExpenseType" asp-route-id="@expenseType.ExpenseTypeID" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="AddExpenseType" class="btn btn-success">Add New Expense Type</a>
+
+
+
+
+
+

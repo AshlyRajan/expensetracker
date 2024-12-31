@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "EnterApprovedAmount";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h1>EnterApprovedAmount</h1>
+
+@using (Html.BeginForm("SaveApprovedAmount", "admin"))
+{
+    <input type="hidden" name="expenseId" value="@ViewBag.ExpenseId" />
+    <div class="form-group">
+        <label for="approvedAmount">Approved Amount:</label>
+        <input type="number" class="form-control" name="approvedAmount" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+}

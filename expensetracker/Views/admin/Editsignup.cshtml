@@ -1,0 +1,54 @@
+﻿@model expensetracker.Models.signup
+@{
+    ViewData["Title"] = "Editsignup";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h1>Editsignup</h1>
+
+
+
+<form asp-action="Editsignup" method="post">
+    @Html.HiddenFor(m => m.Id)
+    <div>
+        <label>Name:</label>
+        @Html.EditorFor(m => m.Name)
+    </div>
+    <div>
+        <label>Address:</label>
+        @Html.EditorFor(m => m.Address)
+    </div>
+    <div>
+        <label>State:</label>
+        @Html.EditorFor(m => m.State)
+    </div>
+    <div>
+        <label>District:</label>
+        @Html.EditorFor(m => m.District)
+    </div>
+    <div>
+        <label>Gender:</label>
+        @Html.EditorFor(m => m.Gender)
+    </div>
+    <div>
+        <label>Email:</label>
+        @Html.EditorFor(m => m.Email)
+    </div>
+    <div>
+        <label>Phone:</label>
+        @Html.EditorFor(m => m.Phone)
+    </div>
+    <div>
+        <label>Password:</label>
+        @Html.EditorFor(m => m.Password)
+    </div>
+    <div>
+        <label>Confirm Password:</label>
+        @Html.EditorFor(m => m.ConfirmPassword)
+    </div>
+    <div>
+        <label>Role:</label>
+        @Html.EditorFor(m => m.Role)
+    </div>
+    <button type="submit">Save</button>
+</form>

@@ -1,0 +1,24 @@
+﻿@model expensetracker.Models.ExpenseTypes
+@{
+    ViewData["Title"] = "DeleteExpenseType";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h1>Delete Expense Type</h1>
+
+<div>
+    <h4>Are you sure you want to delete this expense type?</h4>
+    <div>
+        <strong>ID:</strong> @Model.ExpenseTypeID
+    </div>
+    <div>
+        <strong>Name:</strong> @Model.ExpenseType
+    </div>
+</div>
+
+<form asp-action="ConfirmDeleteExpenseType" method="post">
+    <input type="hidden" name="id" value="@Model.ExpenseTypeID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="ListExpenseTypes" class="btn btn-secondary">Cancel</a>
+</form>
+

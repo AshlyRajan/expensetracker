@@ -1,0 +1,45 @@
+﻿@model IEnumerable<expensetracker.Models.signup>
+
+@{
+    ViewData["Title"] = "Signup List";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h2>Signup List</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>State</th>
+            <th>District</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.Address</td>
+                <td>@item.State</td>
+                <td>@item.District</td>
+                <td>@item.Gender</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>@item.Role</td>
+                <td>
+                    <a asp-action="Editsignup" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="Deletesignup" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

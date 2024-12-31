@@ -1,0 +1,44 @@
+﻿@model List<expensetracker.Models.ExpenseModel>
+@{
+    
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h2>Admin Page - View Expenses</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Expense ID</th>
+            <th>Expense Type ID</th>
+            <th>Amount</th>
+            <th>Date of Expense</th>
+            @* <th>Description</th> *@
+            <th>Created By</th>
+            <th>Created At</th>
+            @* <th>Bill Copy</th> *@
+            <th>Status</th>
+            <th>Approved Amount</th>
+            <th>Approved Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var expense in Model)
+        {
+            <tr>
+                <td>@expense.Expenseid</td>
+                <td>@expense.ExpenseTypeID</td>
+                <td>@expense.Amount</td>
+                <td>@expense.DateofExpense.ToString("yyyy-MM-dd")</td>
+                @* <td>@expense.Description</td> *@
+                <td>@expense.CreatedBy</td>
+                <td>@expense.Createdat.ToString("yyyy-MM-dd")</td>
+               @*  <td>@expense.Billcopy</td> *@
+                <td>@expense.Status</td>
+                <td>@expense.ApprovedAmount</td>
+                <td>@expense.ApprovedDate.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

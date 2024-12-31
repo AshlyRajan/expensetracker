@@ -1,0 +1,109 @@
+﻿@model expensetracker.Models.signup
+
+@{
+    ViewData["Title"] = "Signup";
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4" style="width: 500px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+       
+
+        @using (Html.BeginForm("Create", "ExpenseTracker", FormMethod.Post))
+        {
+            <div class="form-group mb-3">
+                <label for="Name">Name:</label>
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="Address">Address:</label>
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="State">State:</label>
+                @Html.DropDownListFor(m => m.State, Model.States, "Select State", new { @class = "form-control", id = "stateDropdown" })
+                @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="District">District:</label>
+                @Html.DropDownListFor(m => m.District, Model.Districts, "Select District", new { @class = "form-control", id = "districtDropdown" })
+                @Html.ValidationMessageFor(m => m.District, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Gender:</label><br />
+                @Html.RadioButtonFor(m => m.Gender, "Male") Male
+                @Html.RadioButtonFor(m => m.Gender, "Female") Female
+                @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="Email">Email:</label>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="Phone">Phone:</label>
+                @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="Password">Password:</label>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="ConfirmPassword">Confirm Password:</label>
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+
+            @* Hidden Role Field *@
+            <input type="hidden" asp-for="Role" value="User" />
+
+
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#stateDropdown').change(function () {
+                var state = $(this).val();
+
+                if (state) {
+                    $.ajax({
+                        url: '@Url.Action("GetDistricts", "ExpenseTracker")',
+                        type: 'POST',
+                        data: { state: state },
+                        success: function (data) {
+                            var districtDropdown = $('#districtDropdown');
+                            districtDropdown.empty();
+                            districtDropdown.append('<option value="">Select District</option>');
+
+                            $.each(data, function (index, district) {
+                                districtDropdown.append('<option value="' + district.value + '">' + district.text + '</option>');
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching districts:", error);
+                            alert("An error occurred while fetching districts. Please try again.");
+                        }
+                    });
+                } else {
+                    $('#districtDropdown').empty().append('<option value="">Select District</option>');
+                }
+            });
+        });
+    </script>
+}

@@ -13,135 +13,142 @@ namespace expensetracker.DAL
         {
             connectionString = configuration.GetConnectionString("DefaultConnection");
         }
-        public void InsertUser(string name, int age, string address, string email, string username, string password)
+
+        public bool InsertRegistration(signup signup)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                try
+                using (SqlCommand cmd = new SqlCommand("CreateSignup", conn))
                 {
-                    connection.Open();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    
+                    cmd.Parameters.AddWithValue("@Name", signup.Name);
+                    cmd.Parameters.AddWithValue("@Address", signup.Address);
+                    cmd.Parameters.AddWithValue("@State", signup.State);
+                    cmd.Parameters.AddWithValue("@District", signup.District);
+                    cmd.Parameters.AddWithValue("@Gender", signup.Gender);
+                    cmd.Parameters.AddWithValue("@Email", signup.Email);
+                    cmd.Parameters.AddWithValue("@Phone", signup.Phone);
+                    cmd.Parameters.AddWithValue("@Password", signup.Password);
+                    cmd.Parameters.AddWithValue("@ConfirmPassword", signup.ConfirmPassword);
+                    cmd.Parameters.AddWithValue("@Role", signup.Role);
 
-                    // Create SQL Command
-                    using (SqlCommand cmd = new SqlCommand("sp_insert", connection))
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                    return rowsAffected > 0;
+                }
+            }
+        }
+        public signup GetSignupById(int id)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetSignupById", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-                        // Add parameters
-                        cmd.Parameters.AddWithValue("@name", name);
-                        cmd.Parameters.AddWithValue("@age", age);
-                        cmd.Parameters.AddWithValue("@addr", address); // Ensure this is correctly added
-                        cmd.Parameters.AddWithValue("@email", email);
-                        cmd.Parameters.AddWithValue("@username", username);
-                        cmd.Parameters.AddWithValue("@password", password);
-
-                        // Execute the command
-                        int rowsAffected = cmd.ExecuteNonQuery();
-
-                        // Optional: Output success message
-                        Console.WriteLine($"{rowsAffected} row(s) inserted successfully.");
+                        if (reader.Read())
+                        {
+                            return new signup
+                            {
+                                Id = reader["Id"].ToString(),
+                                Name = reader["Name"].ToString(),
+                                Address = reader["Address"].ToString(),
+                                State = reader["State"].ToString(),
+                                District = reader["District"].ToString(),
+                                Gender = reader["Gender"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                Phone = reader["Phone"].ToString(),
+                                Password = reader["Password"].ToString(),
+                                ConfirmPassword = reader["Confirmpassword"].ToString(),
+                                Role = reader["Role"].ToString()
+                            };
+                        }
+                        return null;
                     }
                 }
-                catch (Exception ex)
+            }
+        }
+
+        public bool UpdateSignup(signup signup)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("UpdateSignup", conn))
                 {
-                    // Handle errors
-                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", signup.Id);
+                    cmd.Parameters.AddWithValue("@Name", signup.Name);
+                    cmd.Parameters.AddWithValue("@Address", signup.Address);
+                    cmd.Parameters.AddWithValue("@State", signup.State);
+                    cmd.Parameters.AddWithValue("@District", signup.District);
+                    cmd.Parameters.AddWithValue("@Gender", signup.Gender);
+                    cmd.Parameters.AddWithValue("@Email", signup.Email);
+                    cmd.Parameters.AddWithValue("@Phone", signup.Phone);
+                    cmd.Parameters.AddWithValue("@Password", signup.Password);
+                    cmd.Parameters.AddWithValue("@Confirmpassword", signup.ConfirmPassword);
+                    cmd.Parameters.AddWithValue("@Role", signup.Role);
+
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
                 }
             }
         }
-       
 
-
-        private readonly List<user> _users;
-
-            public expensedal()
+        public bool DeleteSignup(int id)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                // Dummy data for demo purposes
-                _users = new List<user>
-            {
-                new user { UserId = 1, Name = "John Doe", Email = "john@example.com", Password = "password123" },
-                new user { UserId = 2, Name = "Jane Smith", Email = "jane@example.com", Password = "pass123" }
-            };
-            }
-
-            public user AuthenticateUser(string email, string password)
-            {
-                return _users.FirstOrDefault(u => u.Email == email && u.Password == password);
+                using (SqlCommand cmd = new SqlCommand("DeleteSignup", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
             }
         }
 
+        public Registration Login(string Username, string Password)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("Login", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Username", Username);
+                    cmd.Parameters.AddWithValue("@Password", Password);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            return new Registration
+                            {
+                                Id = reader.GetInt32(0),
+                                Name = reader.GetString(1),
+                                Role = reader.GetString(2),
+                                Username = Username,  // Explicitly set the Username
+                                Password = Password   // Explicitly set the Password
+                            };
+                        }
+                    }
+                }
+            }
+            return null; // Return null if no user is found
+        }
     }
+}
 
-
-        //public IEnumerable<Category> GetCategories(int userId)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
-        //    connection.Open();
-        //    var cmd = new SqlCommand("usp_GetCategories", connection)
-        //    {
-        //        CommandType = CommandType.StoredProcedure
-        //    };
-        //    cmd.Parameters.AddWithValue("@UserId", userId);
-
-        //    using var reader = cmd.ExecuteReader();
-        //    var categories = new List<Category>();
-        //    while (reader.Read())
-        //    {
-        //        categories.Add(new Category
-        //        {
-        //            Id = reader.GetInt32(0),
-        //            Name = reader.GetString(1),
-        //            UserId = userId,
-        //            CreatedDate = reader.GetDateTime(2)
-        //        });
-        //    }
-        //    return categories;
-        //}
-
-        //public void AddExpense(Expense expense)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
-        //    connection.Open();
-        //    var cmd = new SqlCommand("usp_AddExpense", connection)
-        //    {
-        //        CommandType = CommandType.StoredProcedure
-        //    };
-        //    cmd.Parameters.AddWithValue("@Amount", expense.Amount);
-        //    cmd.Parameters.AddWithValue("@CategoryId", expense.CategoryId);
-        //    cmd.Parameters.AddWithValue("@Date", expense.Date);
-        //    cmd.Parameters.AddWithValue("@Description", expense.Description);
-        //    cmd.Parameters.AddWithValue("@UserId", expense.UserId);
-        //    cmd.ExecuteNonQuery();
-        //}
-
-        //public IEnumerable<Expense> GetExpenses(int userId)
-        //{
-        //    using var connection = new SqlConnection(connectionString);
-        //    connection.Open();
-        //    var cmd = new SqlCommand("usp_GetExpenses", connection)
-        //    {
-        //        CommandType = CommandType.StoredProcedure
-        //    };
-        //    cmd.Parameters.AddWithValue("@UserId", userId);
-
-        //    using var reader = cmd.ExecuteReader();
-        //    var expenses = new List<Expense>();
-        //    while (reader.Read())
-        //    {
-        //        expenses.Add(new Expense
-        //        {
-        //            Id = reader.GetInt32(0),
-        //            Amount = reader.GetDecimal(1),
-        //            CategoryName = reader.GetString(2),
-        //            Date = reader.GetDateTime(3),
-        //            Description = reader.GetString(4),
-        //            CreatedDate = reader.GetDateTime(5),
-        //            UserId = userId
-        //        });
-        //    }
-        //    return expenses;
-        //}
-//    }
-//}
-
-
-
+//     

@@ -30,9 +30,10 @@ namespace expensetracker.Models
             [DataType(DataType.Password)]
             [Compare("Password", ErrorMessage = "Passwords do not match")]
             public string ConfirmPassword { get; set; }
-
-            public DateTime CreatedAt { get; set; } = DateTime.Now;
-           public int UserId { get; set; }
+             public string Role { get; set; }
+             //public DateTime CreatedAt { get; set; } = DateTime.Now;
+             //public int UserId { get; set; }
+           
     }
     }
 
@@ -47,7 +48,7 @@ namespace expensetracker.Models
        public string Password { get; set; }
        }
 
-public class user
+public class userproperty
        {  
         public int UserId { get; set; }
         public string Name { get; set; }
@@ -56,27 +57,27 @@ public class user
    
         }
 
-        public class Expense
-        {
-            public int Id { get; set; }
-            public decimal Amount { get; set; }
-            public int CategoryId { get; set; }
-            public string CategoryName { get; set; }
-            public DateTime Date { get; set; }
-            public string Description { get; set; }
-            public int UserId { get; set; }
-            public DateTime CreatedDate { get; set; }
-        }
+        //public class Expense
+        //{
+        //    public int Id { get; set; }
+        //    public decimal Amount { get; set; }
+        //    public int CategoryId { get; set; }
+        //    public string CategoryName { get; set; }
+        //    public DateTime Date { get; set; }
+        //    public string Description { get; set; }
+        //    public int UserId { get; set; }
+        //    public DateTime CreatedDate { get; set; }
+        //}
 
-        public class Income
-        {
-            public int Id { get; set; }
-            public decimal Amount { get; set; }
-            public string Source { get; set; }
-            public DateTime Date { get; set; }
-            public string Description { get; set; }
-            public int UserId { get; set; }
-            public DateTime CreatedDate { get; set; }
-        }
+        //public class Income
+        //{
+        //    public int Id { get; set; }
+        //    public decimal Amount { get; set; }
+        //    public string Source { get; set; }
+        //    public DateTime Date { get; set; }
+        //    public string Description { get; set; }
+        //    public int UserId { get; set; }
+        //    public DateTime CreatedDate { get; set; }
+        //}
     
 

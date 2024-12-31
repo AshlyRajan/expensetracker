@@ -1,0 +1,64 @@
+﻿@model expensetracker.Models.Expense
+
+@{
+    ViewData["Title"] = "Edit Expense";
+}
+
+<h1>Edit Expense</h1>
+
+<form asp-action="Edit" enctype="multipart/form-data">
+    <input type="hidden" asp-for="ExpenseID" />
+
+    <div class="form-group">
+        <label for="ExpenseType">Expense Type</label>
+        <select asp-for="ExpenseTypeID" class="form-control" asp-items="ViewBag.ExpenseTypes"></select>
+    </div>
+
+    <div class="form-group">
+        <label for="Amount">Amount</label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="DateOfExpense">Date of Expense</label>
+        <input asp-for="DateOfExpense" type="date" class="form-control" />
+        <span asp-validation-for="DateOfExpense" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="BillCopyPath">Upload Bill Copy</label>
+        <input type="file" asp-for="BillCopyPath" name="BillCopyPath" class="form-control" />
+        <span asp-validation-for="BillCopyPath" class="text-danger"></span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.BillCopyPath))
+    {
+        <div class="form-group">
+            <label>Current Bill Copy</label>
+            <div>
+                @if (Model.BillCopyPath.EndsWith(".pdf"))
+                {
+                    <a href="@Model.BillCopyPath" target="_blank">View Current PDF</a>
+                }
+                else
+                {
+                    <img src="@Model.BillCopyPath" alt="Bill Copy" style="max-width: 200px; max-height: 200px;" />
+                }
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

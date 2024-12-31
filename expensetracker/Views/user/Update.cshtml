@@ -1,0 +1,34 @@
+﻿@model expensetracker.Models.Expenz
+@{
+       Layout = "~/Views/Shared/userlayout.cshtml";
+}
+<h1>Update Expense</h1>
+
+<form asp-action="Update" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Expenseid" />
+    <div class="form-group">
+        <label asp-for="ExpenseTypeName"></label>
+        <input asp-for="ExpenseTypeName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Amount"></label>
+        <input asp-for="Amount" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DateofExpense"></label>
+        <input asp-for="DateofExpense" type="date" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Bill Copy</label>
+        <input type="file" name="BillCopy" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <input asp-for="Status" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

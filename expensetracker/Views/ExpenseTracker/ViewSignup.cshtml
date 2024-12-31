@@ -1,0 +1,22 @@
+﻿@model expensetracker.Models.signup
+@{
+    ViewData["Title"] = "ViewSignup";
+    Layout = "~/Views/Shared/userlayout.cshtml";
+}
+
+<h1>ViewSignup</h1>
+
+
+<h2>Signup Details</h2>
+<p><strong>Name:</strong> @Model.Name</p>
+<p><strong>Address:</strong> @Model.Address</p>
+<p><strong>State:</strong> @Model.State</p>
+<p><strong>District:</strong> @Model.District</p>
+<p><strong>Gender:</strong> @Model.Gender</p>
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Phone:</strong> @Model.Phone</p>
+<p><strong>Role:</strong> @Model.Role</p>
+
+<a href="@Url.Action("Edit", "signup", new { id = Model.Id })">Edit</a> |
+<a href="@Url.Action("Delete", "signup", new { id = Model.Id })">Delete</a>
+

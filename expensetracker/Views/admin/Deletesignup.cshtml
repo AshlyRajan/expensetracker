@@ -1,0 +1,21 @@
+﻿@model expensetracker.Models.signup
+@{
+    ViewData["Title"] = "Deletesignup";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h1>Deletesignup</h1>
+
+
+<p>Are you sure you want to delete the following record?</p>
+
+<div>
+    <p>Name: @Model.Name</p>
+    <p>Email: @Model.Email</p>
+    <p>Role: @Model.Role</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    @Html.HiddenFor(m => m.Id)
+    <button type="submit">Delete</button>
+</form>

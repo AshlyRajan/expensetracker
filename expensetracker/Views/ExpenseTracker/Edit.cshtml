@@ -1,0 +1,19 @@
+﻿@model expensetracker.Models.signup
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h1>Edit</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="form-group">
+        <label for="Name">Name</label>
+        <input type="text" id="Name" name="Name" class="form-control" value="@Model.Name" required />
+    </div>
+    <!-- Repeat similar input fields for Address, State, District, Gender, Email, Phone, Password, ConfirmPassword, Role -->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>

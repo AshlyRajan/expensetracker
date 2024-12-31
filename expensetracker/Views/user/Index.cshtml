@@ -1,0 +1,42 @@
+﻿@model IEnumerable<expensetracker.Models.Expense>
+@{
+    ViewData["Title"] = "Expenses Index";
+    Layout = "~/Views/Shared/userlayout.cshtml";
+}
+
+
+
+<h2>Expenses</h2>
+
+
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Expense ID</th>
+            <th>Expense Type</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var expense in Model)
+        {
+            <tr>
+                <td>@expense.ExpenseID</td>
+                <td>@expense.ExpenseType</td>
+                <td>@expense.Amount</td>
+                <td>@expense.DateOfExpense.ToString("yyyy-MM-dd")</td>
+                <td>@expense.Description</td>
+                <td>
+
+                    <a href="@Url.Action("Edit", new { id = expense.ExpenseID })" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="@Url.Action("Delete", new { id = expense.ExpenseID })" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
