@@ -1,8 +1,11 @@
 ﻿@model List<expensetracker.Models.Expenz>
 @{
-    ViewData["Title"] = "Admin Home";
+    ViewData["Title"] = "ADMINHomeNEW";
     Layout = "~/Views/Shared/admin.cshtml";
 }
+
+<h1>ADMINHomeNEW</h1>
+
 
 <div class="container mt-5">
 
@@ -52,6 +55,53 @@
                         <th>Description</th>
                         <th>Created By</th>
                         <th>Status</th>
+                        <th>Bill Copy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var expense in Model)
+                        {
+                            <tr>
+                                <td>@expense.Expenseid</td>
+                                <td>@expense.ExpenseTypeID</td> <!-- Adjust this to display the actual ExpenseTypeName if available -->
+                                <td>@expense.Amount</td>
+                                <td>@expense.DateofExpense.ToString("dd/MM/yyyy")</td>
+                                <td>@expense.Description</td>
+                                <td>@expense.CreatedBy</td>
+                                <td>@expense.Status</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(expense.BillCopy))
+                                    {
+                                        <a href="@expense.BillCopy" target="_blank">View Bill</a>
+                                    }
+                                    else
+                                    {
+                                        <span>No Bill</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No expenses found for this user.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @* <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Expense Type</th>
+                        <th>Amount</th>
+                        <th>Date of Expense</th>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -78,7 +128,7 @@
                     }
                 </tbody>
             </table>
-
+ *@
             <script>
                 function handleAction(expenseId, action) {
                     alert(`Expense ID: ${expenseId}, Action: ${action}`);
@@ -88,4 +138,3 @@
         </div>
     </div>
 </div>
-

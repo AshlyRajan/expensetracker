@@ -1,6 +1,5 @@
 ﻿@model List<expensetracker.Models.Expenz>
-@* @model IEnumerable<expensetracker.Models.Expense>
- *@@{
+@{
     ViewData["Title"] = "User Home Expense Tracker";
     Layout = "~/Views/Shared/userlayout.cshtml";
 }
@@ -9,31 +8,43 @@
     <div class="row">
         <div class="col-12 text-center mb-4">
             <h1>Welcome to Your Expense Tracker</h1>
-           
+            <h3>Hi, @ViewBag.Username!</h3> <!-- Display the logged-in user's name -->
         </div>
     </div>
 
-    <div class="row justify-content-center">
-        <!-- View All Expenses -->
-        <div class="col-md-4 col-sm-6 text-center">
-            <a href="@Url.Action("manage", "user")">
-                <img src="/images/viewexpense.jpg" class="img-fluid rounded-circle shadow" alt="View Expenses" />
-            </a>
-            <h4 class="mt-3">Manage All Expenses</h4>
-        </div>
+    <div class="row justify-content-center text-center">
+        <!-- Flexbox for Equal Spacing -->
+        <div class="d-flex justify-content-between w-100">
+            <!-- Manage All Expenses -->
+            <div class="flex-item">
+                <a href="@Url.Action("manage", "user")">
+                    <img src="/images/viewexpense.jpg" class="img-fluid rounded-circle shadow" alt="View Expenses" />
+                </a>
+                <h4 class="mt-3">Manage All Expenses</h4>
+            </div>
 
-        <!-- Create New Expense -->
-        <div class="col-md-4 col-sm-6 text-center">
-            <a href="@Url.Action("Create", "user")">
-                <img src="/images/manageexpense.jpg" class="img-fluid rounded-circle shadow" alt="Create Expense" />
-            </a>
-            <h4 class="mt-3">Create New Expense</h4>
+            <!-- Create New Expense -->
+            <div class="flex-item">
+                <a href="@Url.Action("Create", "user")">
+                    <img src="/images/manageexpense.jpg" class="img-fluid rounded-circle shadow" alt="Create Expense" />
+                </a>
+                <h4 class="mt-3">Create New Expense</h4>
+            </div>
+
+            <!-- View Approved Expense -->
+            <div class="flex-item">
+                <a href="@Url.Action("UserExpenses", "user")">
+                    <img src="/images/approved.jpg" class="img-fluid rounded-circle shadow" alt="View Approved Expense" />
+                </a>
+                <h4 class="mt-3">View Approved Expense</h4>
+            </div>
         </div>
     </div>
 
     <div class="row mt-5">
         <div class="col-12">
             <h2>Recent Expenses</h2>
+
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -52,7 +63,7 @@
                     {
                         <tr>
                             <td>@expense.Expenseid</td>
-                            <td>@expense.ExpenseTypeName</td>
+                            <td>@expense.ExpenseTypeID</td>
                             <td>@expense.Amount</td>
                             <td>@expense.DateofExpense.ToString("dd/MM/yyyy")</td>
                             <td>@expense.Description</td>
@@ -63,49 +74,31 @@
                                 {
                                     <a href="@expense.BillCopy" target="_blank">View Bill</a>
                                 }
-                                else
-                                {
-                                   
-                                }
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-            @* <table class="table table-striped table-hover mt-3">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Expense Type</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Created By</th>
-                        <th>Created At</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Count > 0)
-                    {
-                        @foreach (var expense in Model)
-                        {
-                            <tr>
-                                <td>@expense.ExpenseType</td>
-                                <td>@expense.Amount</td>
-                                <td>@expense.DateOfExpense.ToShortDateString()</td>
-                                <td>@expense.Description</td>
-                                <td>@expense.CreatedBy</td>
-                                <td>@expense.CreatedAt.ToShortDateString()</td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="6" class="text-center">No expenses found.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table> *@
         </div>
     </div>
 </div>
+
+<style>
+    .d-flex {
+        display: flex;
+    }
+
+    .flex-item {
+        flex: 1;
+        margin: 0 10px; /* Equal spacing between items */
+    }
+
+        .flex-item img {
+            max-width: 100px;
+            height: auto;
+        }
+
+    .text-center {
+        text-align: center;
+    }
+</style>

@@ -2,9 +2,9 @@
 
 namespace expensetracker.Models
 {
-  
-        public class Expenz
-        {
+
+    public class Expenz
+    {
         public int Expenseid { get; set; }
 
         [Required(ErrorMessage = "Expense Type is required.")]
@@ -33,10 +33,16 @@ namespace expensetracker.Models
         public string Status { get; set; }
 
         public string ExpenseTypeName { get; set; } // Optional
+        public int ApprovedAmount { get; set; }
+        public DateTime ApprovedDate { get; set; }
     }
     public class Approved
     {
         public int ExpenseId { get; set; }
         public int ApprovedAmount { get; set; }
+        public DateTime Approveddate
+        {
+            get; set;
+        }
     }
 }

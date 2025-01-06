@@ -1,0 +1,41 @@
+﻿@model List<expensetracker.Models.Expenz>
+@{
+    ViewData["Title"] = "UserExpenses";
+    Layout = "~/Views/Shared/userlayout.cshtml";
+}
+
+<h1>UserExpenses</h1>
+
+
+
+<h1 class="text-center">Your Expenses</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Expense ID</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Approved Amount</th>
+            <th>Approved Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var expense in Model)
+        {
+            <tr>
+                <td>@expense.Expenseid</td>
+                <td>@expense.ExpenseTypeID</td>
+                <td>@expense.Amount</td>
+                <td>@expense.DateofExpense.ToShortDateString()</td>
+                <td>@expense.Description</td>
+                <td>@expense.ApprovedAmount</td>
+                <td>@expense.ApprovedDate.ToShortDateString()</td>
+                <td>@expense.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

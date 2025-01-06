@@ -1,73 +1,70 @@
 ﻿@model expensetracker.Models.Expenz
-
 @{
-    ViewData["Title"] = "Insert Expense";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/userlayout.cshtml";
 }
 
-<div class="container">
-    <h2 class="text-center">Create Expense</h2>
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success text-center">
-            @TempData["SuccessMessage"]
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh; background-color: #f8f9fa;">
+    <div class="card shadow-lg" style="width: 50%; max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h2 class="text-center mb-0">Create Expense</h2>
         </div>
-    }
+        <div class="card-body">
+            <form asp-action="Create" enctype="multipart/form-data" method="post">
+                @Html.AntiForgeryToken()
 
-    <<form asp-action="Create" method="post" enctype="multipart/form-data" class="mx-auto" style="max-width: 600px;">
-        <div class="form-group">
-            <label for="ExpenseTypeID">Expense Type:</label>
-            <select asp-for="ExpenseTypeID" class="form-control" asp-items="ViewBag.ExpenseTypes">
-                <option value="">-- Select Expense Type --</option>
-            </select>
-            <span asp-validation-for="ExpenseTypeID" class="text-danger"></span>
+                <div class="form-group">
+                    <label for="ExpenseTypeID">Expense Type</label>
+                    <select asp-for="ExpenseTypeID" asp-items="ViewBag.ExpenseTypes" class="form-control" required>
+                        <option value="">-- Select Expense Type --</option>
+                    </select>
+                    @Html.ValidationMessageFor(model => model.ExpenseTypeID, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <label for="Amount">Amount</label>
+                    <input asp-for="Amount" class="form-control" type="number" step="0.01" required />
+                    @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <label for="DateofExpense">Date of Expense</label>
+                    <input asp-for="DateofExpense" class="form-control" type="date" required />
+                    @Html.ValidationMessageFor(model => model.DateofExpense, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <label for="Description">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4" required></textarea>
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <label for="BillCopy">Bill Copy</label>
+                    <input type="file" asp-for="BillCopy" class="form-control" />
+                    @Html.ValidationMessageFor(model => model.BillCopy, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Hidden Status -->
+                <input type="hidden" asp-for="Status" value="Pending" />
+
+                <div class="form-group">
+                    <label for="CreatedBy">Created By</label>
+                    <input asp-for="CreatedBy" class="form-control" placeholder="Enter username" required />
+                    @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    <label for="CreatedAt">Created At</label>
+                    <input asp-for="CreatedAt" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly />
+                    @Html.ValidationMessageFor(model => model.CreatedAt, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary">Create Expense</button>
+                    <a href="@Url.Action("userhome", "Home")" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
         </div>
-
-        <div class="form-group">
-            <label for="Amount">Amount:</label>
-            <input type="number" asp-for="Amount" class="form-control" placeholder="Enter Amount" />
-            <span asp-validation-for="Amount" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="DateofExpense">Date of Expense:</label>
-            <input type="date" asp-for="DateofExpense" class="form-control" />
-            <span asp-validation-for="DateofExpense" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="Description">Description:</label>
-            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter Description"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="CreatedBy">Created By:</label>
-            <input type="text" asp-for="CreatedBy" class="form-control" placeholder="Enter Creator Name" />
-            <span asp-validation-for="CreatedBy" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="CreatedAt">Created At:</label>
-            <input type="date" asp-for="CreatedAt" class="form-control" />
-            <span asp-validation-for="CreatedAt" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label for="BillCopy">Upload Bill:</label>
-            <input type="file" asp-for="BillCopy" class="form-control" data-val="false" />
-            <span asp-validation-for="BillCopy" class="text-danger"></span>
-        </div>
-
-
-
-        <div class="form-group">
-            <label for="Status">Status:</label>
-            <input type="text" asp-for="Status" class="form-control" placeholder="Pending" />
-            <span asp-validation-for="Status" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Submit</button>
-        <a asp-action="Create" class="btn btn-secondary w-100 mt-2">Cancel</a>
-    </form>
+    </div>
 </div>

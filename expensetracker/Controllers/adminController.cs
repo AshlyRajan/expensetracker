@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using expensetracker.Models;
 using expensetracker.DAL;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace expensetracker.Controllers
 {
@@ -13,14 +15,28 @@ namespace expensetracker.Controllers
         {
             adminDAL = expenseDAL;
         }
+
         
-            // GET: adminController
-            public ActionResult adminhome()
+        [HttpGet]
+        public async Task<IActionResult> adminhome()
+        {
+            try
             {
-                var expenses = adminDAL.GetAllExpenses();
-                return View(expenses);
                 
+                var expenses = await adminDAL.GetAllExpenzAsync();
+
+                return View(expenses);
             }
+            catch (Exception ex)
+            {
+                // Handle any errors that occur while fetching the data
+                TempData["ErrorMessage"] = "An error occurred while fetching expenses: " + ex.Message;
+                return RedirectToAction("Error", "Home"); // Redirect to a general error page
+            }
+        }
+
+
+
         public IActionResult CreateExpense()
         {
             return View();
@@ -33,19 +49,19 @@ namespace expensetracker.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddExpenseType(string ExpenseTypes)
+        public IActionResult AddExpenseType(string ExpenseType)
         {
             if (ModelState.IsValid)
             {
                 // Add the new expense type to the database
-                adminDAL.AddExpenseType(ExpenseTypes);
+                adminDAL.AddExpenseType(ExpenseType);
 
                 // Redirect to the ListExpenseTypes page
                 return RedirectToAction("ListExpenseTypes");
             }
 
             // If validation fails, redisplay the form
-            return View(ExpenseTypes);
+            return View(ExpenseType);
         }
       
 
@@ -156,6 +172,7 @@ namespace expensetracker.Controllers
     public IActionResult Logout()
         {
             HttpContext.Session.Clear();
+            Response.Cookies.Delete(".AspNetCore.Session");
             TempData["successMessage"] = "You have been logged out successfully.";
             return RedirectToAction("SignIn", "expensetracker");
         }
@@ -207,9 +224,65 @@ namespace expensetracker.Controllers
 
             return View(expenses);  // Pass the data to the view
         }
+
+        public IActionResult ViewContactMessages()
+        {
+            List<ContactMessage> messages = new List<ContactMessage>();
+            using (SqlConnection conn = new SqlConnection("YourConnectionString"))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("GetAllContactMessages", conn)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        messages.Add(new ContactMessage
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Email = reader.GetString(2),
+                            Message = reader.GetString(3),
+                            SubmittedAt = reader.GetDateTime(4)
+                        });
+                    }
+                }
+            }
+            return View(messages);
+        }
+
+
+        [HttpPost]
+        public IActionResult DeleteContactMessage(int id)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection("YourConnectionString"))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand("DeleteContactMessage", conn)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+
+                TempData["Success"] = "Message deleted successfully.";
+                return RedirectToAction("ViewContactMessages");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"An error occurred: {ex.Message}";
+                return RedirectToAction("ViewContactMessages");
+            }
+        }
+
     }
 }
-
+    
     
 
 

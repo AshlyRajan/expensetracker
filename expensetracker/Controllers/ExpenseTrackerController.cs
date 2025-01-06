@@ -6,6 +6,7 @@ using System.Data;
 using Humanizer;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MongoDB.Driver.Core.Configuration;
 
 namespace expensetracker.Controllers
 {
@@ -28,49 +29,83 @@ namespace expensetracker.Controllers
         {
             return View();
         }
+        // GET: ContactUs page
+        [HttpGet]
         public IActionResult Contactus()
         {
             return View();
         }
 
+        // POST: ContactUs page (Submit Form)
+        [HttpPost]
+        public IActionResult ContactUs(ContactMessage model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Insert the contact message into the database using expensedal
+                expensedal.InsertContactMessage(model);
 
+                // Success message and redirect
+                TempData["SuccessMessage"] = "Your message has been submitted successfully.";
+                return RedirectToAction("ContactUs");
+            }
 
-        public ActionResult Success()
+            // If the model is not valid, return the view with the model so validation errors can be shown
+            return View(model);
+        }
+
+        // GET: MessageIndex (Display all messages)
+        [HttpGet]
+        public IActionResult MessageIndex()
+        {
+            // Retrieve all contact messages from the database using expensedal
+            var messages = expensedal.GetAllContactMessages();
+
+            return View(messages);  // Pass the list of messages to the view
+        }
+
+        // POST: Delete a contact message
+        [HttpPost]
+        public IActionResult DeleteMessage(int messageId)
+        {
+            // Delete the contact message by its Id using expensedal
+            expensedal.DeleteContactMessage(messageId);
+
+            // Success message and redirect to MessageIndex
+            TempData["SuccessMessage"] = "Message deleted successfully.";
+            return RedirectToAction("MessageIndex");
+        }
+ 
+public ActionResult Success()
         {
             return View();
         }
 
-
-
-        // GET: /Account/SignIn
         [HttpGet]
         public IActionResult SignIn()
         {
             return View();
         }
 
-        // POST: /Account/SignIn
         [HttpPost]
         public IActionResult SignIn(string Username, string Password)
         {
             var user = expensedal.Login(Username, Password);
-
             if (user != null)
             {
-                // Validate required fields
+                // Validate required fields 
                 if (string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.Role))
                 {
                     TempData["Error"] = "User data is incomplete. Please contact support.";
                     return RedirectToAction("SignIn");
                 }
 
-                // Store user details in session
+                // Store user details in session 
                 HttpContext.Session.SetString("Username", user.Username);
                 HttpContext.Session.SetString("Password", user.Password);
                 HttpContext.Session.SetString("UserRole", user.Role);
-
-                TempData["Message"] = $"Welcome back, {user.Name}!";
-
+                HttpContext.Session.SetString("UserId", user.Id.ToString());
+                
 
                 if (user.Role == "Admin")
                 {
@@ -88,75 +123,58 @@ namespace expensetracker.Controllers
             }
             else
             {
-                TempData["Error"] = "Invalid username or password.";
+                TempData["Error"] = "Invalid email or password.";
                 return RedirectToAction("SignIn");
             }
         }
 
 
 
-        // Dashboard or homepage (accessible after login)
 
-        // GET: Signup
+        [HttpGet]
         public IActionResult Create()
         {
-
             var model = new signup
             {
                 States = GetStates(),
-                Districts = new List<SelectListItem>()
+                Districts = new List<SelectListItem>(), // Initially empty
+                Role = "User" // Default role
             };
             return View(model);
         }
 
-        // POST: Signup
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(signup model)
         {
             if (!ModelState.IsValid)
             {
-                // Save the user registration data
-                bool isInserted = expensedal.InsertRegistration(model);
-
-                if (isInserted)
+                try
                 {
-                    return RedirectToAction("Create");
+                    expensedal.InsertRegistration(model);
+                    return RedirectToAction("Index", "Home");
                 }
-                else
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "An error occurred while registering. Please try again.");
+                    ModelState.AddModelError("", $"An error occurred while registering: {ex.Message}");
                 }
             }
 
+            // Repopulate States and Districts for redisplay
             model.States = GetStates();
             model.Districts = GetDistrictsByState(model.State);
-            return View("Create", model);
+            return View(model);
         }
 
-        // Handle dynamic loading of districts based on state
-
-        [HttpPost]
-        public JsonResult GetDistricts(string state)
-        {
-            var districts = GetDistrictsByState(state);
-
-            // Ensure the data is in the format expected by the JavaScript
-            var result = districts.Select(d => new { value = d.Value, text = d.Text }).ToList();
-            return Json(result);
-        }
-
-        // Hardcoded method to get states (you can modify this to fetch from DB)
         private List<SelectListItem> GetStates()
         {
             return new List<SelectListItem>
             {
-                new SelectListItem { Value = "kerala", Text = "kerala" },
-                new SelectListItem { Value = "tamilnadu", Text = "tamilnadu" },
-
+                new SelectListItem { Value = "kerala", Text = "Kerala" },
+                new SelectListItem { Value = "tamilnadu", Text = "Tamil Nadu" }
             };
         }
 
-        // Hardcoded method to get districts based on state
         private List<SelectListItem> GetDistrictsByState(string state)
         {
             var districts = new List<SelectListItem>();
@@ -174,6 +192,23 @@ namespace expensetracker.Controllers
 
             return districts;
         }
+    
+
+
+public IActionResult Profile()
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId")); // Assuming UserId is stored in session
+            var userDetails = expensedal.GetUserDetails(userId);
+
+            if (userDetails == null)
+            {
+                TempData["Error"] = "User details not found.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(userDetails);
+        }
+
 
         // GET: View Signup by ID
         public IActionResult ViewSignup(int id)
@@ -185,43 +220,6 @@ namespace expensetracker.Controllers
             }
             return View(signup);
         }
-        // GET: Edit Signup
-        public IActionResult Edit(int id)
-        {
-            var signup = expensedal.GetSignupById(id);
-            if (signup == null)
-            {
-                return NotFound();
-            }
-            return View(signup);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, signup model)
-        {
-            // Corrected the comparison and type conversion
-            if (id != int.Parse(model.Id))
-            {
-                return BadRequest();
-            }
-
-            if (ModelState.IsValid)
-            {
-                bool isUpdated = expensedal.UpdateSignup(model);
-                if (isUpdated)
-                {
-                    return RedirectToAction("Success");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "An error occurred while updating the record.");
-                }
-            }
-            return View(model);
-        }
-        // GET: Delete Signup
         public IActionResult Delete(int id)
         {
             var signup = expensedal.GetSignupById(id);
@@ -237,13 +235,79 @@ namespace expensetracker.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            bool isDeleted = expensedal.DeleteSignup(id);
-            if (isDeleted)
+            try
             {
+                expensedal.DeleteSignup(id); // Now a void method
                 return RedirectToAction("Success");
             }
-            return RedirectToAction("Error");
+            catch (Exception ex)
+            {
+                // Handle the error if deletion fails
+                ModelState.AddModelError("", $"An error occurred while deleting: {ex.Message}");
+                return RedirectToAction("Error");
+            }
         }
+
+        [HttpGet]
+        public IActionResult Editsignup(int id)
+        {
+            var user = expensedal.GetSignupById(id);
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("Profile");
+            }
+            return View(user);
+        }
+        // POST: Editsignup
+        [HttpPost]
+        public IActionResult Editsignup(signup updatedUser)
+        {
+            if (!ModelState.IsValid)
+            {
+                try
+                {
+                    expensedal.UpdateSignup(updatedUser); // Now a void method
+                    TempData["Success"] = "Profile updated successfully.";
+                    return RedirectToAction("Profile");
+                }
+                catch (Exception ex)
+                {
+                    // Handle any exception that occurs during the update
+                    TempData["Error"] = $"An error occurred while updating the profile: {ex.Message}";
+                }
+            }
+
+            // In case of validation failure or any exception, return the same view with the user data
+            return View(updatedUser);
+        }
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Contactus(ContactMessage model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            expensedal.InsertContactMessage(model); // Save the contact message
+        //            TempData["Success"] = "Your message has been sent successfully.";
+        //            return RedirectToAction("ContactUs");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ModelState.AddModelError("", $"An error occurred while sending your message: {ex.Message}");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ModelState.AddModelError("", "Please correct the highlighted errors.");
+        //    }
+
+        //    return View(model); // Return the form with validation errors
+        //}
+
 
     }
 }

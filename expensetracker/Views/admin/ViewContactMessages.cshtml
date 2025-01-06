@@ -1,0 +1,43 @@
+﻿@model List<ContactMessage>
+@{
+    ViewData["Title"] = "ViewContactMessages";
+    Layout = "~/Views/Shared/admin.cshtml";
+}
+
+<h1>ViewContactMessages</h1>
+
+
+<div class="container mt-5">
+    <h2>Contact Messages</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Message</th>
+                <th>Submitted At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var message in Model)
+            {
+                <tr>
+                    <td>@message.Id</td>
+                    <td>@message.Name</td>
+                    <td>@message.Email</td>
+                    <td>@message.Message</td>
+                    <td>@message.SubmittedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <form asp-action="DeleteContactMessage" method="post">
+                            <input type="hidden" name="id" value="@message.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

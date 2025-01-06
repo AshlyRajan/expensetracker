@@ -1,4 +1,6 @@
-﻿@{
+﻿@model ContactMessage
+
+@{
     ViewData["Title"] = "Contact Us - Expense Tracker";
 }
 
@@ -82,23 +84,40 @@
         <!-- Contact Us Section -->
         <section class="contact-section text-center">
             <h2>Contact Us</h2>
-           
+
             <div class="row justify-content-center">
                 <!-- Contact Form -->
                 <div class="col-md-5">
                     <div class="contact-form">
-                        <form method="post" action="/ExpenseTracker/ContactUs">
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="alert alert-success">
+                                @TempData["Success"]
+                            </div>
+                        }
+
+                        @if (TempData["Error"] != null)
+                        {
+                            <div class="alert alert-danger">
+                                @TempData["Error"]
+                            </div>
+                        }
+
+                        <form asp-action="ContactUs" method="post">
                             <div class="form-group">
-                                <label for="Name">Full name</label>
-                                <input type="text" class="form-control" id="Name" name="Name" required placeholder="Your Full Name" />
+                                <label asp-for="Name"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Your Full Name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label for="Email">Email</label>
-                                <input type="email" class="form-control" id="Email" name="Email" required placeholder="Your Email Address" />
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" class="form-control" placeholder="Your Email Address" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label for="Message">Message</label>
-                                <textarea class="form-control" id="Message" name="Message" rows="4" required placeholder="Your Message"></textarea>
+                                <label asp-for="Message"></label>
+                                <textarea asp-for="Message" class="form-control" rows="4" placeholder="Your Message"></textarea>
+                                <span asp-validation-for="Message" class="text-danger"></span>
                             </div>
                             <button type="submit" class="btn btn-primary">Send Message</button>
                         </form>

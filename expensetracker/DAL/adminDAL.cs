@@ -31,56 +31,40 @@ namespace expensetracker.DAL
         }
 
 
-
-        
         public List<Expenz> GetAllExpenses()
         {
             List<Expenz> expenses = new List<Expenz>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string query = @"
-                    SELECT 
-                        e.Expenseid, 
-                        e.ExpenseTypeID, 
-                        et.ExpenseType, 
-                        e.Amount, 
-                        e.DateofExpense, 
-                        e.Description, 
-                        e.CreatedBy, 
-                        e.CreatedAt, 
-                        e.BillCopy, 
-                        e.Status
-                    FROM 
-                        Expenz e
-                    JOIN 
-                        ExpenseTypes et ON e.ExpenseTypeID = et.ExpenseTypeID";
-
-                SqlCommand command = new SqlCommand(query, connection);
-                connection.Open();
-
-                SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                using (SqlCommand command = new SqlCommand("GetExpensesWithApprovedAmount", connection))
                 {
-                    expenses.Add(new Expenz
-                    {
-                        Expenseid = Convert.ToInt32(reader["Expenseid"]),
-                        ExpenseTypeID = Convert.ToInt32(reader["ExpenseTypeID"]),
-                        ExpenseTypeName = reader["ExpenseType"].ToString(), // Ensure this is not null
-                        Amount = Convert.ToInt32(reader["Amount"]),
-                        DateofExpense = Convert.ToDateTime(reader["DateofExpense"]),
-                        Description = reader["Description"].ToString(),
-                        CreatedBy = reader["CreatedBy"].ToString(),
-                        CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-                        BillCopy = reader["BillCopy"].ToString(),
-                        Status = reader["Status"].ToString()
-                    });
+                    command.CommandType = CommandType.StoredProcedure;
+                    connection.Open();
 
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        expenses.Add(new Expenz
+                        {
+                            Expenseid = Convert.ToInt32(reader["Expenseid"]),
+                            ExpenseTypeID = Convert.ToInt32(reader["ExpenseTypeID"]),
+                            Amount = Convert.ToInt32(reader["Amount"]),
+                            DateofExpense = Convert.ToDateTime(reader["DateofExpense"]),
+                            CreatedBy = reader["CreatedBy"].ToString(),
+                            CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+                            Status = reader["Status"].ToString(),
+                            ApprovedAmount = Convert.ToInt32(reader["ApprovedAmount"]),
+                            ApprovedDate = Convert.ToDateTime(reader["ApprovedDate"])
+                        });
+                    }
                 }
             }
 
             return expenses;
         }
+
+
         public List<ExpenseTypes> GetAllExpenseTypes()
         {
             var expenseTypes = new List<ExpenseTypes>();
@@ -170,12 +154,6 @@ namespace expensetracker.DAL
         }
 
 
-
-
-
-
-
-
         public void UpdateExpenseStatus(int expenseId, string status, int? approvedAmount = null)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -231,7 +209,7 @@ namespace expensetracker.DAL
 
             return expenses;
         }
-        public bool UpdateSignup(signup signup)
+        public void UpdateSignup(signup signup)
         {
             using (var conn = new SqlConnection(connectionString))
             using (var cmd = new SqlCommand("UpdateSignup", conn))
@@ -249,12 +227,22 @@ namespace expensetracker.DAL
                 cmd.Parameters.AddWithValue("@Confirmpassword", signup.ConfirmPassword);
                 cmd.Parameters.AddWithValue("@Role", signup.Role);
 
-                conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                try
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    Console.WriteLine($"User with ID {signup.Id} updated successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error updating user with ID {signup.Id}: {ex.Message}");
+                    throw;
+                }
             }
         }
 
-        public bool DeleteSignup(int id)
+
+        public void DeleteSignup(int id)
         {
             using (var conn = new SqlConnection(connectionString))
             using (var cmd = new SqlCommand("DeleteSignup", conn))
@@ -262,10 +250,20 @@ namespace expensetracker.DAL
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Id", id);
 
-                conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                try
+                {
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    Console.WriteLine($"User with ID {id} deleted successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting user with ID {id}: {ex.Message}");
+                    throw;
+                }
             }
         }
+
 
         public signup GetSignupById(int id)
         {
@@ -281,7 +279,7 @@ namespace expensetracker.DAL
                     {
                         return new signup
                         {
-                            Id = reader["Id"].ToString(),
+                            Id = Convert.ToInt32(reader["Id"]),
                             Name = reader["Name"].ToString(),
                             Address = reader["Address"].ToString(),
                             State = reader["State"].ToString(),
@@ -313,7 +311,7 @@ namespace expensetracker.DAL
                     {
                         signups.Add(new signup
                         {
-                            Id = reader["id"].ToString(),
+                            Id = Convert.ToInt32(reader["Id"]),
                             Name = reader["Name"].ToString(),
                             Address = reader["Address"].ToString(),
                             State = reader["State"].ToString(),
@@ -332,9 +330,149 @@ namespace expensetracker.DAL
             return signups;
         }
 
-    }
+        public async Task<List<Expenz>> GetAllExpenzAsync()
+        {
+            var expenses = new List<Expenz>();
 
+            using (var connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand("GetAllExpenz", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            var expense = new Expenz
+                            {
+                                Expenseid = reader.GetInt32(reader.GetOrdinal("Expenseid")),
+                                ExpenseTypeID = reader.GetInt32(reader.GetOrdinal("ExpenseTypeID")),
+                                Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
+                                DateofExpense = reader.GetDateTime(reader.GetOrdinal("DateofExpense")),
+                                Description = reader.GetString(reader.GetOrdinal("Description")),
+                                CreatedBy = reader.GetString(reader.GetOrdinal("CreatedBy")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("Createdat")),
+                                BillCopy = reader.IsDBNull(reader.GetOrdinal("Billcopy")) ? null : reader.GetString(reader.GetOrdinal("Billcopy")),
+                                Status = reader.GetString(reader.GetOrdinal("Status"))
+                            };
+
+                            expenses.Add(expense);
+                        }
+                    }
+                }
+            }
+
+            return expenses;
+        }
+        // Fetch all contact messages
+        public List<ContactMessage> GetAllContactMessages()
+        {
+            var messages = new List<ContactMessage>();
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand("SELECT * FROM ContactMessages", connection);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        messages.Add(new ContactMessage
+                        {
+                            Id = (int)reader["Id"],
+                            Name = reader["Name"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Message = reader["Message"].ToString(),
+                            SubmittedAt = (DateTime)reader["SubmittedAt"]
+                        });
+                    }
+                }
+            }
+            return messages;
+        }
+
+        // Fetch a single contact message by ID
+        public ContactMessage GetContactMessageById(int id)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand("SELECT * FROM ContactMessages WHERE Id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new ContactMessage
+                        {
+                            Id = (int)reader["Id"],
+                            Name = reader["Name"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            Message = reader["Message"].ToString(),
+                            SubmittedAt = (DateTime)reader["SubmittedAt"]
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Delete a contact message
+        public void DeleteContactMessage(int id)
+        {
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand("DELETE FROM ContactMessages WHERE Id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+        }
+    }
 }
+
+//        public async Task<List<Expenz>> GetUserExpensesAsync(string createdBy)
+//        {
+//            List<Expenz> expenses = new List<Expenz>();
+
+//            using (SqlConnection connection = new SqlConnection(connectionString))
+//            {
+//                await connection.OpenAsync();
+
+//                using (SqlCommand command = new SqlCommand("GetUserExpenses", connection))
+//                {
+//                    command.CommandType = CommandType.StoredProcedure;
+//                    command.Parameters.AddWithValue("@CreatedBy", createdBy);
+
+//                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+//                    {
+//                        while (await reader.ReadAsync())
+//                        {
+//                            expenses.Add(new Expenz
+//                            {
+//                                Expenseid = reader.GetInt32(reader.GetOrdinal("ExpenseID")),
+//                                ExpenseTypeID = reader.GetInt32(reader.GetOrdinal("ExpenseTypeID")),
+//                                Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
+//                                DateofExpense = reader.GetDateTime(reader.GetOrdinal("DateofExpense")),
+//                                Description = reader.GetString(reader.GetOrdinal("Description")),
+//                                CreatedBy = reader.GetString(reader.GetOrdinal("CreatedBy")),
+//                                Status = reader.GetString(reader.GetOrdinal("Status")),
+//                                BillCopy = reader.IsDBNull(reader.GetOrdinal("BillCopy")) ? null : reader.GetString(reader.GetOrdinal("BillCopy"))
+//                            });
+//                        }
+//                    }
+//                }
+//            }
+
+//            return expenses;
+//        }
+
+
+//    }
+
+//}
 
 
 ////employees and admins   
@@ -455,3 +593,51 @@ namespace expensetracker.DAL
 //    }
 //}
 
+//public List<Expenz> GetAllExpenses()
+//{
+//    List<Expenz> expenses = new List<Expenz>();
+
+//    using (SqlConnection connection = new SqlConnection(connectionString))
+//    {
+//        string query = @"
+//            SELECT 
+//                e.Expenseid, 
+//                e.ExpenseTypeID, 
+//                et.ExpenseType, 
+//                e.Amount, 
+//                e.DateofExpense, 
+//                e.Description, 
+//                e.CreatedBy, 
+//                e.CreatedAt, 
+//                e.BillCopy, 
+//                e.Status
+//            FROM 
+//                Expenz e
+//            JOIN 
+//                ExpenseTypes et ON e.ExpenseTypeID = et.ExpenseTypeID";
+
+//        SqlCommand command = new SqlCommand(query, connection);
+//        connection.Open();
+
+//        SqlDataReader reader = command.ExecuteReader();
+//        while (reader.Read())
+//        {
+//            expenses.Add(new Expenz
+//            {
+//                Expenseid = Convert.ToInt32(reader["Expenseid"]),
+//                ExpenseTypeID = Convert.ToInt32(reader["ExpenseTypeID"]),
+//                ExpenseTypeName = reader["ExpenseType"].ToString(), // Ensure this is not null
+//                Amount = Convert.ToInt32(reader["Amount"]),
+//                DateofExpense = Convert.ToDateTime(reader["DateofExpense"]),
+//                Description = reader["Description"].ToString(),
+//                CreatedBy = reader["CreatedBy"].ToString(),
+//                CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+//                BillCopy = reader["BillCopy"].ToString(),
+//                Status = reader["Status"].ToString()
+//            });
+
+//        }
+//    }
+
+//    return expenses;
+//}

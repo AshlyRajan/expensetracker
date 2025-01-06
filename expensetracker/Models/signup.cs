@@ -5,7 +5,7 @@ namespace expensetracker.Models
 {
     public class signup
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required.")]
         [StringLength(50, ErrorMessage = "Name can't be longer than 50 characters.")]
@@ -26,13 +26,13 @@ namespace expensetracker.Models
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
-        [StringLength(100, ErrorMessage = "Email can't be longer than 100 characters.")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Phone number is required.")]
+        [Required(ErrorMessage = "Phone is required.")]
         [Phone(ErrorMessage = "Invalid phone number.")]
-        [StringLength(15, ErrorMessage = "Phone number can't be longer than 15 characters.")]
         public string Phone { get; set; }
+        [Required(ErrorMessage ="username required")]
+        public string Username { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 100 characters.")]
@@ -42,12 +42,11 @@ namespace expensetracker.Models
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; }
 
-        [Required(ErrorMessage = "Role is required.")]
         public string Role { get; set; }
 
-        // Dropdown Lists for States and Districts (for View)
+        // Dropdown Lists for States and Districts
         public IEnumerable<SelectListItem> States { get; set; }
-        public IEnumerable<SelectListItem> Districts { get; set; }
+       public IEnumerable<SelectListItem> Districts { get; set; }
     }
 }
 
